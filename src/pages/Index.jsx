@@ -1,19 +1,43 @@
-// Update this page (the content is just a fallback if you fail and example)
-// Use chakra-ui
-import { Container, Text, VStack } from "@chakra-ui/react";
-
-// Example of using react-icons
-// import { FaRocket } from "react-icons/fa";
-// <IconButton aria-label="Add" icon={<FaRocket />} size="lg" />; // IconButton would also have to be imported from chakra
+import { Box, Flex, Input, Button, VStack, Text, useBreakpointValue } from "@chakra-ui/react";
+import { useState } from "react";
 
 const Index = () => {
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState("");
+  const handleInputChange = (e) => setInputValue(e.target.value);
+  const handleSendMessage = () => {
+    if (inputValue.trim()) {
+      setMessages([...messages, { text: inputValue, sender: "You" }]);
+      setInputValue("");
+    }
+  };
+
+  const chatInputSize = useBreakpointValue({ base: "md", md: "lg" });
+
   return (
-    <Container centerContent maxW="container.md" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-      <VStack spacing={4}>
-        <Text fontSize="2xl">Your Blank Canvas</Text>
-        <Text>Chat with the agent to start making edits.</Text>
-      </VStack>
-    </Container>
+    <Flex height="100vh" overflow="hidden">
+      <Box width={{ base: "100%", md: "30%" }} bg="blue.500" p={4} color="white">
+        <VStack spacing={4}>
+          <Text fontSize="2xl">Contacts</Text>
+          <Text>Friend 1</Text>
+          <Text>Friend 2</Text>
+          <Text>Friend 3</Text>
+        </VStack>
+      </Box>
+      <Flex direction="column" p={4} width={{ base: "100%", md: "70%" }} bg="gray.100">
+        <VStack spacing={4} flex="1" overflowY="auto">
+          {messages.map((msg, index) => (
+            <Box key={index} alignSelf={msg.sender === "You" ? "flex-end" : "flex-start"} bg="blue.100" p={3} borderRadius="lg">
+              {msg.text}
+            </Box>
+          ))}
+        </VStack>
+        <Flex mt={4}>
+          <Input placeholder="Type a message..." value={inputValue} onChange={handleInputChange} size={chatInputSize} />
+          <Button onClick={handleSendMessage} colorScheme="blue" ml={2}>Send</Button>
+        </Flex>
+      </Flex>
+    </Flex>
   );
 };
 
